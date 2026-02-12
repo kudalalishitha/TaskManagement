@@ -26,15 +26,19 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(TaskRequest request) {
 
+        // Fetch User by ID (if not found -> throw exception)
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + request.getUserId()));
 
+        // Fetch Category by ID
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.getCategoryId()));
 
+        // Fetch Priority by ID
         Priority priority = priorityRepository.findById(request.getPriorityId())
                 .orElseThrow(() -> new RuntimeException("Priority not found with id: " + request.getPriorityId()));
 
+         // Build new Task object using request data
         Task task = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -44,6 +48,7 @@ public class TaskServiceImpl implements TaskService {
                 .priority(priority)
                 .build();
 
+        // Save task in DB and return saved object
         return taskRepository.save(task);
     }
 
@@ -61,14 +66,18 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTask(Long taskId, TaskRequest request) {
 
+        // Fetch existing task by ID
         Task existing = getTaskById(taskId);
 
+         // Fetch User by ID from request
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + request.getUserId()));
 
+        // Fetch Category by ID from request
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.getCategoryId()));
 
+        // Fetch Priority by ID from request
         Priority priority = priorityRepository.findById(request.getPriorityId())
                 .orElseThrow(() -> new RuntimeException("Priority not found with id: " + request.getPriorityId()));
 
@@ -84,10 +93,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTaskStatus(Long taskId, TaskStatusUpdateRequest request) {
 
+         // Fetch existing task by ID
         Task existing = getTaskById(taskId);
 
+         // Update only status
         existing.setStatus(request.getStatus());
 
+        // Save updated task in DB
         return taskRepository.save(existing);
     }
 
