@@ -8,31 +8,36 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice // Handles exceptions globally for all controllers
 public class GlobalExceptionHandler {
 
+    // Handles UserNotFoundException and returns 404 response
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFound(UserNotFoundException ex) {
         return buildError(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    // Handles TaskNotFoundException and returns 404 response
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<Object> handleTaskNotFound(TaskNotFoundException ex) {
         return buildError(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    // Handles any general exception and returns 500 response
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGeneral(Exception ex) {
         return buildError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // Common method to build structured error response
     private ResponseEntity<Object> buildError(String message, HttpStatus status) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("timestamp", LocalDateTime.now());
-        map.put("status", status.value());
-        map.put("error", status.getReasonPhrase());
-        map.put("message", message);
+        map.put("timestamp", LocalDateTime.now()); // Current time
+        map.put("status", status.value()); // HTTP status code (example: 404)
+        map.put("error", status.getReasonPhrase()); // HTTP reason phrase (example: NOT_FOUND)
+        map.put("message", message); 
 
         return new ResponseEntity<>(map, status);
     }
 }
+
