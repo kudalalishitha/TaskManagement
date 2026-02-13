@@ -9,35 +9,41 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/priorities")
-@RequiredArgsConstructor
+@RestController // Marks this class as a REST Controller
+@RequestMapping("/api/priorities") // Base URL for all Priority APIs
+@RequiredArgsConstructor // Generates constructor for final fields (Dependency Injection)
 public class PriorityController {
 
-    private final PriorityService priorityService;
+    private final PriorityService priorityService; // Service layer object
 
+    // Create a new Priority
     @PostMapping
     public ResponseEntity<Priority> createPriority(@RequestBody Priority priority) {
         return new ResponseEntity<>(priorityService.createPriority(priority), HttpStatus.CREATED);
     }
 
+    // Get all Priorities
     @GetMapping
     public ResponseEntity<List<Priority>> getAllPriorities() {
         return ResponseEntity.ok(priorityService.getAllPriorities());
     }
 
+    // Get Priority by ID
     @GetMapping("/{priorityId}")
     public ResponseEntity<Priority> getPriorityById(@PathVariable Long priorityId) {
         return ResponseEntity.ok(priorityService.getPriorityById(priorityId));
     }
 
+    // Update Priority by ID
     @PutMapping("/{priorityId}")
     public ResponseEntity<Priority> updatePriority(@PathVariable Long priorityId, @RequestBody Priority priority) {
         return ResponseEntity.ok(priorityService.updatePriority(priorityId, priority));
     }
 
+    // Delete Priority by ID
     @DeleteMapping("/{priorityId}")
     public ResponseEntity<String> deletePriority(@PathVariable Long priorityId) {
         return ResponseEntity.ok(priorityService.deletePriority(priorityId));
     }
 }
+
